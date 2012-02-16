@@ -1,0 +1,3 @@
+All scripts must start with: 
+
+addpath(genpath('~/AV/'))
