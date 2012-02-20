@@ -1,6 +1,24 @@
-% Finds a threshold and then binarises image by finding largest continuous area in image
+% Binarises an image by looking for largest continuous area with
+% intensity greater than 0.1 in difference image
 %
 function [binIm] = binariseIm(image, background)
 
     diff = rgb2hsv(abs(image-background));
     binIm = mycleanup(diff(:,:,3)>0.1,2,2);
+    labIm = mybwlabel(binIm);
+    
+    maxLab = max(max(labIm));
+    
+    biggest = 0;
+    maxSize = 0;
+    for i = 1:maxLab
+        areaSize = sum(sum(double(labIm == i)))
+        if sum(sum(double(labIm == i))) > maxSize
+            maxSize = areaSize;
+            biggest = i;
+        end
+    end
+    
+    if biggest ~= 0
+        binIm = (labIm == biggest);
+    end
