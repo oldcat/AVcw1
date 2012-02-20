@@ -1,10 +1,10 @@
 function [motionHistory] = motionHistoryImage(binaries)
 
-	num = size(binaries)
-	avg = image(size(binaries(1))
+	num = size(binaries);
+	avg = zeros(num(1),num(2));
 
-	for i = 1:num
-		avg = avg + binaries(i)
+	for i = 1:num(3)
+		avg = avg + double(binaries(:,:,i));
 	end
 
-	motionHistory = avg/num
+	motionHistory = avg/num(3);
