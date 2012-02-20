@@ -11,7 +11,7 @@ function [] = boundingBoxTest(seq, backNum, path)
     
     dim = size(binIms);
     
-    [minX maxX minY maxY] = getBBox(binIms);
+    [minX maxX minY maxY] = getBBox(binIms);    
     
     for i = 1:dim(3)
         figure(i)
