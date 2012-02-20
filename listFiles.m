@@ -7,6 +7,10 @@ function [fileList] = listFiles(sequence,path)
         path = '~/AV/train/';
     end
     
+    if path(end) ~= '/'
+        path = [path '/'];
+    end
+    
     if(length(sequence) ~= 2)
         error('ERROR: You have asked for a sequence that is invalid, must be 2 digits')
     end
