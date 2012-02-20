@@ -20,3 +20,4 @@ function [] = boundingBoxTest(seq, show, backNum, path)
     hold on
     plot([minX minX maxX maxX minX], [minY maxY maxY minY minY]);   
     hold off
+    saveas(show, sprintf('~/AV/Results/BBoxMHI%02dThresh0_2.png',show),'png');
