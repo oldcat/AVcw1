@@ -1,7 +1,11 @@
 % Path passed to function is that of folder containing each set. Requires each set to be
 % in a folder labled 'x-y' where that is the name of the set and x and y are integers
 %
-function [fileList] = listFiles(path,sequence)
+function [fileList] = listFiles(sequence,path)
+
+    if nargin == 1
+        path = '~/AV/train/';
+    end
     
     if(length(sequence) ~= 2)
         error('ERROR: You have asked for a sequence that is invalid, must be 2 digits')

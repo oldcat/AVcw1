@@ -1,6 +1,10 @@
 % 
 function [seqList] = listSeqs(path)
       
+    if nargin == 0
+        path = '~/AV/train/';
+    end  
+      
     if path(end) ~= '/'
         path = [path '/'];
     end
@@ -9,10 +13,10 @@ function [seqList] = listSeqs(path)
     folders = struct2cell(folderStruct);
     folders = char(folders(1,3:end-1));
 
-    num = length(folders);
+    num = size(folders);
     seqList = [];    
 
-    for i = 1:num
+    for i = 1:num(1)
         seq = [];
         name = folders(i,:);
         isDash = (name == '-');
