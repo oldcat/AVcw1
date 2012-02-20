@@ -36,5 +36,3 @@ function [binSeq] = binariseSeq(seq, backNum, path)
         binIm = binariseIm(diff);
         binSeq(:,:,i) = binIm;
     end
-        
-    
