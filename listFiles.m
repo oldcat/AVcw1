@@ -18,7 +18,7 @@ function [fileList] = listFiles(path,sequence)
     if sum(ismember(folders, sprintf('%d-%d',sequence(1),sequence(2))))
         fileListStruct = dir([path sprintf('%d-%d',sequence(1),sequence(2))]);
         fileList = struct2cell(fileListStruct);
-        fileList = fileList(1,3:end);    
+        fileList = char(fileList(1,3:end));
     else
         error('ERROR: You have asked for a sequence that does not exist')
     end
