@@ -4,7 +4,7 @@
 % Erodes DIL to restore size.
 function BW2 = myCleanup(binimage,ERO,DIL)
 
-     SE = strel('square',3);        % structuring element
+     SE = ones(3,3);        % structuring element
      BW2 = binimage;
      for i = 1 : ERO
        BW1 = BW2;
