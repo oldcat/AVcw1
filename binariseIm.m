@@ -1,10 +1,10 @@
 % Binarises an image by looking for largest continuous area with
-% intensity greater than 0.1 in difference image
+% intensity greater than 0.1 in given difference image
 %
-function [binIm] = binariseIm(image, background)
+function [binIm] = binariseIm(diff)
 
-    diff = rgb2hsv(abs(image-background));
-    binIm = mycleanup(diff(:,:,3)>0.1,2,2);
+    diff = rgb2hsv(diff);
+    binIm = mycleanup(diff>0.1,2,2);
     labIm = mybwlabel(binIm);
     
     maxLab = max(max(labIm));
@@ -12,7 +12,7 @@ function [binIm] = binariseIm(image, background)
     biggest = 0;
     maxSize = 0;
     for i = 1:maxLab
-        areaSize = sum(sum(double(labIm == i)))
+        areaSize = sum(sum(double(labIm == i)));
         if sum(sum(double(labIm == i))) > maxSize
             maxSize = areaSize;
             biggest = i;
@@ -22,3 +22,4 @@ function [binIm] = binariseIm(image, background)
     if biggest ~= 0
         binIm = (labIm == biggest);
     end
+    
