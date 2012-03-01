@@ -9,6 +9,6 @@ function muv = complexmoment(Image,u,v)
      for i = 1 : n                              
        c1 = complex(r(i) - rbar,c(i) - cbar);   
        c2 = complex(r(i) - rbar,cbar - c(i));
-       momlist(i) = c1^u * c2^v;
+       momlist(i) = c1^u * c2^v * Image(r(i),c(i));
      end
      muv = sum(momlist);
