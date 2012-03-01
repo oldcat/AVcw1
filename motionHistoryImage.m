@@ -1,7 +1,7 @@
 function [motionHistory] = motionHistoryImage(binaries)
 
 	num = size(binaries);
-	avg = double(binaries(:,:,1))
+	avg = double(binaries(:,:,1));
 
     total = num(3);
 

@@ -35,8 +35,8 @@ function [binSeq] = binariseSeq(seq, backNum, path)
         diff = abs(fore-back);
         binIm = binariseIm(diff);
         binSeq(:,:,i) = binIm;
-        figure(num(1)+24)
-        imshow(binIm);
+        %figure(i+24)
+        %imshow(binIm);
     end
     
     
