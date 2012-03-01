@@ -7,14 +7,13 @@ function [] = boundingBoxTest(seq, show, backNum, path)
         backNum = 1;
     end
     if nargin < 2
-        show = 1
+        show = 1;
     end    
     
     binIms = binariseSeq(seq, backNum, path);
-    [minX maxX minY maxY] = getBBox(binIms);    
     mhi = motionHistoryImage(binIms);
+    [minX maxX minY maxY] = findHand(mhi);
 
-    
     figure(show)
     imshow(mhi)
     hold on
