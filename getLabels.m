@@ -1,5 +1,4 @@
 % Function reads a labels file from expected location or from a given one and returns the labels.
-% Assumes ssequences are in the same order as
 %
 function [labels] = getLabels(file)
     
