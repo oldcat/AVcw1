@@ -1,5 +1,8 @@
-function [] = boundingBoxTest(seq, show, backNum, path)
+function [] = boundingBoxTest(seq, show, backNum, path, mhiType)
     
+    if nargin < 5
+        mhiType = 1;
+    end
     if nargin < 4
         path = '~/AV/train/';
     end
@@ -11,7 +14,7 @@ function [] = boundingBoxTest(seq, show, backNum, path)
     end    
     
     binIms = binariseSeq(seq, backNum, path);
-    mhi = motionHistoryImage(binIms);
+    mhi = motionHistoryImage(binIms, mhiType);
     [minX maxX minY maxY] = findHand(mhi);
 
     figure(show)
