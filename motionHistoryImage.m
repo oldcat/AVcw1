@@ -21,9 +21,9 @@ function [mhi] = mhiImage(binaries, form)
     
     if (form == 1) | (form == 2);
         mhi = double(binaries(:,:,1))/num(3);
-        i = 1
-        figure(i)
-        imshow(mhi)
+        %i = 1;
+        %figure(i);
+        %imshow(mhi);
 
         total = num(3);
 

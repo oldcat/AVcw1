@@ -30,5 +30,5 @@ tmp = c30*c12*c12*c12;
 ci5 = 1000000*real(tmp);
 ci6 = 1000000*imag(tmp);
 
-     vec = [compactness,ci1,ci2,ci3,ci4,ci5,ci6];
+     vec = [area,perim,compactness,ci1,ci2,ci3,ci4,ci5,ci6];
 %     vec = [compactness,ci1,ci2];         %only use 3 as only have 4 samples

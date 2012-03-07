@@ -3,12 +3,16 @@
 %
 function [labLocs] = getLabLocs(labNums)
     
-    
     dim = size(labNums);
     maxLab = max(max(labNums));
     
     labLocs = [];
     
     for i = 1:maxLab
-        labLocs(:,i) = find(labNums == i);
+        labs = find(labNums == i);
+        for j = 1:length(labs)
+            labLocs(j,i) = labs(j);
+        end
     end
+    
+    labLocs = labLocs - double(labLocs == 0);

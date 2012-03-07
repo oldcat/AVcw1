@@ -13,10 +13,6 @@ function [binSeq] = binariseSeq(seq, backNum, path)
     if path(end) ~= '/'
         path = [path '/'];
     end
-
-    if(length(seq) ~= 2)
-        error('ERROR: You have asked for a sequence that is invalid, must be 2 digits')
-    end
     
     if((backNum > 2) | (backNum < 1))
         error('ERROR: backNumground can only be 1 or 2');
