@@ -6,7 +6,7 @@ function [sets] = split8(labLocs, method)
     if nargin < 2
     	method = 1;
     elseif(method < 1) | (method > 2)
-		error('ERROR: Method of splitting data must be 1, fully random, or 2, random with one of each per set")
+		error('ERROR: Method of splitting data must be 1, fully random, or 2, random with one of each per set')
 	end
     
     dim = size(labLocs);
