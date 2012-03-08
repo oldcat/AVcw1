@@ -1,4 +1,13 @@
-function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType, mhiType, likeType)
+% Performs 8 Fold Cross Validation on test data using a training set to prime the classifier.
+% The test data is either entered to it or the fold not being used in the CV is used.
+%
+% Parameters:
+%
+%   trainPath:  The path of the training data images, they should be in folders numbered 1-1, 1-2...n-m
+%   testPath:   The path of the test data images, if using train to test enter '', folders should be numberer 1, 2...n
+%   labelled:   If the test data comes with a lables 
+%
+function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType, mhiType, likeType, show)
 
 	if (length(trainPath) == 0) & (length(testPath) == 0)
 	    trainPath = '~/AV/train/';
@@ -20,6 +29,14 @@ function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType
             testLocs = getLabLocs(testNums);
         end
         tMHItmp = motionHistoryImage(binariseSeq(testSeqs(1,:), backnum, testPath),mhiType);
+        if show
+            figure('Name',sprintf('Test Seq: %d',1),'NumberTitle','off')
+            [minX maxX minY maxY] = findHand(tMHItmp);
+            imshow(tMHItmp)
+            hold on
+            plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);   
+            hold off
+        end
         tPtmp = getproperties(tMHItmp);
         dTstSeqs = size(testSeqs);
         dTstMHI = size(tMHItmp);
@@ -30,6 +47,14 @@ function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType
         testProps(1,:) = tPtmp;
         for i = 2:dTstSeqs(1)
             testMHIs(:,:,i) = motionHistoryImage(binariseSeq(testSeqs(i,:), backnum, testPath),mhiType);
+            if show
+                [minX maxX minY maxY] = findHand(testMHIs(:,:,i));
+                figure('Name',sprintf('Test Seq: %d',i),'NumberTitle','off')
+                imshow(testMHIs(:,:,i))
+                hold on
+                plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
+                hold off
+            end
             testProps(i,:) = getproperties(testMHIs(:,:,i));
         end
 	end
@@ -41,6 +66,14 @@ function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType
     trainLocs = getLabLocs(trainNums);
 	
     tMHItmp = motionHistoryImage(binariseSeq(trainSeqs(getSeqFromLoc(trainLabs,1),:), backnum, trainPath), mhiType);
+    if show
+        [minX maxX minY maxY] = findHand(tMHItmp(:,:,1,1));
+        figure('Name',sprintf('Train Seq: %d-%d',1,1),'NumberTitle','off')
+        imshow(tMHItmp(:,:,1,1))
+        hold on
+        plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
+        hold off
+    end
     tPtmp = getproperties(tMHItmp);
     dTrnSeqs = size(trainNums);
     dTrnProps = size(tPtmp);
@@ -53,12 +86,21 @@ function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType
         for i = 1:dTrnSeqs(1)
             if ((j ~= 1) | (i ~= 1)) & (trainNums(i,j) > -1)
                 trainMHIs(:,:,i,j) = motionHistoryImage(binariseSeq([i j], backnum, trainPath),mhiType);
+                if show
+                    [minX maxX minY maxY] = findHand(trainMHIs(:,:,i,j));
+                    figure('Name',sprintf('Train Seq: %d-%d',i,j),'NumberTitle','off')
+                    imshow(trainMHIs(:,:,i,j))
+                    hold on
+                    plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
+                    hold off
+                end
                 trainProps(:,:,i,j) = getproperties(trainMHIs(:,:,i,j));
             end
         end
     end
 	
 	trainSets = split8(trainLocs, splitType);
+	
 	if ~selfTest
 		if likeType == 1
 			totalRockLike = ones(dTstSeqs(1),1);
@@ -203,5 +245,3 @@ function [class] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType
 			end
 		end
 	end
-
-    class = 1;

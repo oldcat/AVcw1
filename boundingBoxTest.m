@@ -18,7 +18,7 @@ function [] = boundingBoxTest(seq, show, backNum, path, mhiType)
     [minX maxX minY maxY] = findHand(mhi);
 
     figure(show)
-    imshow(mhi)
+    imshow(mhi/(max(max(mhi))))
     hold on
     plot([minX minX maxX maxX minX], [minY maxY maxY minY minY]);   
     hold off

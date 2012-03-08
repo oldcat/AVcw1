@@ -3,8 +3,8 @@
 %   1.  Last image is brightest
 %   2.  Last image is brightest max value is 1 (means it shows up in image)
 %   3.  Images are all averaged
-%   4.  Normal distribution over images that are used normalised so max value is 1
-%   5.  Normal distribution over all images using only certain ones normalised so max value is 1
+%   4.  Normal distribution over images that are used
+%   5.  Normal distribution over all images using only certain ones
 %
 % First 3 and last 3 images may be cut if there is no overlap with next or previous images.
 % This is in part to keep out noise and also because these images are less likely to be
@@ -14,7 +14,7 @@
 function [mhi] = mhiImage(binaries, form)
 
     if nargin == 1
-        form = 1;
+        form = 3;
     end
 
     num = size(binaries);
@@ -96,15 +96,12 @@ function [mhi] = mhiImage(binaries, form)
         end
         
         mean = (mi+ma)/2;
-        sd = (ma-mi)/4;
+        sd = (ma-mi)/2;
         
         mhi = double(binaries(:,:,1))/num(3);
         for i = first:last
             coeff = gaussValue(mean, sd, i); 
             mhi = mhi + coeff*double(binaries(:,:,i));
         end
-
-        mhi = mhi/max(max(mhi));
-
     end
     

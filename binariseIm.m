@@ -4,7 +4,9 @@
 function [binIm] = binariseIm(diff)
 
     diff = rgb2hsv(diff);
-    binIm = myCleanup(diff(:,:,3)>0.05,1,2);
+    binIm = myCleanup(diff(:,:,3)>0.1,3,11);
+    %diff = rgb2gray(diff);
+    %binIm = myCleanup(diff>0.1,1,2);
     labIm = mybwlabel(binIm);
     
     maxLab = max(max(labIm));
