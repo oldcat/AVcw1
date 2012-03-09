@@ -1,4 +1,5 @@
-% Lists the sequences to be
+% Lists the sequences found at a path, should be of the form 'x-y' or 'x'
+% where x and y are integers
 % 
 function [seqList] = listSeqs(path)
       

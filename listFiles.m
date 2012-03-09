@@ -1,5 +1,5 @@
 % Path passed to function is that of folder containing each set. Requires each set to be
-% in a folder labled 'x-y' where that is the name of the set and x and y are integers
+% in a folder labled 'x-y' or 'x' where that is the name of the set and x and y are integers
 %
 function [fileList] = listFiles(sequence,path)
 

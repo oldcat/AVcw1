@@ -1,5 +1,6 @@
 % Creates 8 sets of locations for training using one of two methods.
-% Each set is a column of the output matrix.
+% Each set is a column of the output matrix. Method 2 is now obsolete
+% due to a better understanding of 8FoldCV.
 %
 function [sets] = split8(labLocs, method)
 

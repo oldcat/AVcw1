@@ -1,3 +1,6 @@
+% get the means and standard deviations of data sets.
+% Each feature should be a collumn in the data matrix.
+%
 function [means, sds] = getMeanSD(data)
 
 	dim = size(data);

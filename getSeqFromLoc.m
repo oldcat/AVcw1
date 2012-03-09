@@ -1,3 +1,6 @@
+% Converts a matrix location referencing labels
+% into a sequence identifier.
+%
 function [seq] = getSeqFromLoc(labels, loc)
 
     seq = [0,0];

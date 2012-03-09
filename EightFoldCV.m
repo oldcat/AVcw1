@@ -3,21 +3,40 @@
 %
 % Parameters:
 %
-%   trainPath:  The path of the training data images, they should be in folders numbered 1-1, 1-2...n-m
-%   testPath:   The path of the test data images, if using train to test enter '', folders should be numberer 1, 2...n
-%   labelled:   If the test data comes with a lables 
+%   trainPath:  The path of the training data images, they should
+%               be in folders numbered 1-1, 1-2...n-m
+%   testPath:   The path of the test data images, if using 8th fold
+%               to test enter '', folders should be numberer 1, 2...n
+%   labelled:   If the test data comes with a set of lables this 
+%               should be set to 1, otherwise 0
+%   backNum:    Enter the background file number, 1 or 2
+%   splitType:  Data can be split one of two ways, way 2 is obsolete,
+%               1 should always be used as it is fully random
+%   mhiType:    There are 5 types of MHI that can be created, see 
+%               motionHistoryImage.m for types, numbers 1-5
+%   likeType:   The cumulative likelihoods of each classification can
+%               be summed or producted when there is a separate test
+%               set. Product is 1, sum is 2
+%   show:       If show is set to 1 then the MHIs will be displayed 
+%               with bounding boxes
 %
 function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, backnum, splitType, mhiType, likeType, show)
 
-	if (length(trainPath) == 0) & (length(testPath) == 0)
+	if (length(trainPath) == 0) & (length(testPath) == 0) 
+	% use default path if none given and set to use 8th fold as test data
 	    trainPath = '~/AV/train/';
 	    selfTest = 1;
-    elseif (length(testPath) == 0)
+    elseif (length(testPath) == 0) 
+    % correct train path and set to use 8th fold as test data
         if trainPath(end) ~= '/'
             trainPath = [trainPath '/'];
         end
 	    selfTest = 1;
+	    
 	else
+	% get test data from location specified
+	
+	    % get data
         if testPath(end) ~= '/'
             testPath = [testPath '/'];
         end
@@ -28,7 +47,11 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
             testNums = getLabNum(testLabs);
             testLocs = getLabLocs(testNums);
         end
+        
+        % create first motion history image, the size of this is used to define the array to store them all
         tMHItmp = motionHistoryImage(binariseSeq(testSeqs(1,:), backnum, testPath),mhiType);
+
+        % display motion history image with bounding box
         if show
             figure('Name',sprintf('Test Seq: %d',1),'NumberTitle','off')
             [minX maxX minY maxY] = findHand(tMHItmp);
@@ -37,7 +60,10 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
             plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);   
             hold off
         end
+       
+        % create first property set, the size of this is used to define the array to store them all 
         tPtmp = getproperties(tMHItmp);
+        
         dTstSeqs = size(testSeqs);
         dTstMHI = size(tMHItmp);
         dTstProps = size(tPtmp);
@@ -46,7 +72,9 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
         testProps = zeros([dTstSeqs(1) dTstProps(2)]);
         testProps(1,:) = tPtmp;
         for i = 2:dTstSeqs(1)
+            % Create and store motion history images
             testMHIs(:,:,i) = motionHistoryImage(binariseSeq(testSeqs(i,:), backnum, testPath),mhiType);
+            % Display motion history images
             if show
                 [minX maxX minY maxY] = findHand(testMHIs(:,:,i));
                 figure('Name',sprintf('Test Seq: %d',i),'NumberTitle','off')
@@ -55,17 +83,22 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
                 plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
                 hold off
             end
+            % Create and store property vectors
             testProps(i,:) = getproperties(testMHIs(:,:,i));
         end
 	end
 	
+	% get all training motion history images and properties
     trainSeqs = listSeqs(trainPath);
     trainLabs = getLabels([trainPath 'labels']);
     trainNums = getLabNum(trainLabs);
     numLabs = max(max(trainNums));
     trainLocs = getLabLocs(trainNums);
-	
+
+    % create first motion history image, the size of this is used to define the array to store them all
     tMHItmp = motionHistoryImage(binariseSeq(trainSeqs(getSeqFromLoc(trainLabs,1),:), backnum, trainPath), mhiType);
+
+    % display motion history image with bounding box
     if show
         [minX maxX minY maxY] = findHand(tMHItmp(:,:,1,1));
         figure('Name',sprintf('Train Seq: %d-%d',1,1),'NumberTitle','off')
@@ -74,7 +107,10 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
         plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
         hold off
     end
-    tPtmp = getproperties(tMHItmp);   
+
+    % create first property set, the size of this is used to define the array to store them all 
+    tPtmp = getproperties(tMHItmp);  
+     
     dTrnSeqs = size(trainNums);
     dTrnProps = size(tPtmp);
     dTrnMHI = size(tMHItmp);
@@ -85,8 +121,10 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
     for j = 1:dTrnSeqs(2)
         for i = 1:dTrnSeqs(1)
             if ((j ~= 1) | (i ~= 1)) & (trainNums(i,j) > -1)
+                % Create and store motion history images
                 trainMHIs(:,:,i,j) = motionHistoryImage(binariseSeq([i j], backnum, trainPath),mhiType);
                 if show
+                    % display motion history image
                     [minX maxX minY maxY] = findHand(trainMHIs(:,:,i,j));
                     figure('Name',sprintf('Train Seq: %d-%d',i,j),'NumberTitle','off')
                     imshow(trainMHIs(:,:,i,j)/max(max(trainMHIs(:,:,i,j))))
@@ -94,13 +132,16 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
                     plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
                     hold off
                 end
+                % Create and store property vectors
                 trainProps(:,:,i,j) = getproperties(trainMHIs(:,:,i,j));
             end
         end
     end
 	
+	% Randomly partition training data into 8 sets
 	trainSets = split8(trainLocs, splitType);
 	
+	% If test set provided initialise an array to store all of the likelihoods so they can be combined
 	if ~selfTest
 		if likeType == 1
 			totalRockLike = ones(dTstSeqs(1),1);
@@ -113,9 +154,10 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
 		end
 	end
 
-
+    % Work through each fold
 	for fold = 1:8
-		if selfTest & labelled
+	    % If classifying the left out fold then store it's properties in the test variables
+		if selfTest
 			testLocs = trainSets(:,fold);
 			testProps = [];
 			for i = 1:length(testLocs)
@@ -127,6 +169,8 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
         foldTrainLocs = [trainSets(:,1:fold-1) trainSets(:,fold+1:end)];
 		foldTrainLocs = foldTrainLocs(:);
 		
+
+        % separate the training properties into their types
 		rockProps = [];
 		paperProps = [];
 		scissorsProps = [];
@@ -141,10 +185,13 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
 				scissorsProps = [scissorsProps; trainProps(:,:,seq(1),seq(2))];
 			end		
 		end
+		
+		% get means and standard deviations for each type
 		[rockMean rockSD] = getMeanSD(rockProps);
 		[paperMean paperSD] = getMeanSD(paperProps);
 		[scissorsMean scissorsSD] = getMeanSD(scissorsProps);
 
+        
 		dimTest = size(testProps);
 
 		if ~selfTest
@@ -153,13 +200,14 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
 			scissorsLikes = [];
 		end
 
+        % classify each test set with Naive Bayes
 		for testSet = 1:dimTest(1)
 			rockLike = 1;
 			paperLike = 1;
 			scissorsLike = 1;
 			
+			% calculate likelihoods of each classification
 			% priors assumed to be 1/3 so we have ignored them as they are equal
-			
 			for prop = 1:dimTest(2)
 				rockLike = rockLike * gaussValue(rockMean(1,prop), rockSD(1,prop), testProps(testSet, prop));
 				paperLike = paperLike * gaussValue(paperMean(1,prop), paperSD(1,prop), testProps(testSet, prop));
@@ -171,6 +219,7 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
 				paperLikes = [paperLikes paperLike];
 				scissorsLikes = [scissorLikes scissorLike];			
 			else
+			    % give user results if testing against training data
 				seq = getSeqFromLoc(trainLabs, testLocs(testSet,1));
 				if (rockLike > paperLike) & (rockLike > scissorsLike)
 					if trainNums(seq(1),seq(2)) == 1
@@ -208,6 +257,7 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
 			end			
 		end
 		
+		% Give user results if test set has been provided
 		if ~selfTest
 			for i = 1:length(testLocs)
 				if labelled
