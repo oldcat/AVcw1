@@ -3,8 +3,8 @@ function vec = getproperties(Image)
 
      [H,W] = size(Image);
      area = sum(sum(Image));
-     perim = bwarea(bwperim(double(Image>(max(max(Image)))*0.2),4));     
-     %perim = bwarea(bwperim(double(Image>0.2),4));     
+     %perim = bwarea(bwperim(double(Image>(max(max(Image)))*0.2),4));     
+     perim = bwarea(bwperim(double(Image>0.1),4));     
      %perim = bwarea(bwperim(double(Image>0),4));
      
      % compactness
@@ -32,7 +32,7 @@ tmp = c30*c12*c12*c12;
 ci5 = 1000000*real(tmp);
 ci6 = 1000000*imag(tmp);
 
-vec = [area, perim, compactness];
+vec = [area, perim];
 
 %     vec = [area,perim,compactness,ci1,ci2,ci3,ci4,ci5,ci6];
 %     vec = [compactness,ci1,ci2];         %only use 3 as only have 4 samples

@@ -51,7 +51,7 @@ function [mhi] = mhiImage(binaries, form)
         end
 
     elseif form == 3;
-        avg = double(binaries(:,:,1));
+        mhi = double(binaries(:,:,1));
 
         total = num(3);
 
@@ -59,49 +59,72 @@ function [mhi] = mhiImage(binaries, form)
         failEnd = 0;
 
         for i = 2:num(3)
-            if ((i <= 4) & ~sum(sum(avg & binaries(:,:,i))))
-                avg = double(binaries(:,:,i));
+            if ((i <= 4) & ~sum(sum(mhi & binaries(:,:,i))))
+                mhi = double(binaries(:,:,i));
                 total = total-(i-1-fail);
                 fail = i-1;
-            elseif ((i >= num(3)-2) & ~sum(sum(avg & binaries(:,:,i))))
+            elseif ((i >= num(3)-2) & ~sum(sum(mhi & binaries(:,:,i))))
                 total = total - (num(3)-i+1);
                 break;
             elseif (i < num(3)-2);
-                   avg = avg + double(binaries(:,:,i));
+                   mhi = mhi + double(binaries(:,:,i));
             end
         end
 
-        mhi = avg/total;
-    elseif (form == 4) | (form == 5)
-        first = 1;
-        last = num(3);
-        for i = 2:4
-            if ~sum(sum(binaries(:,:,i) & binaries(:,:,i-1)))
-                first = i;
-            end
-        end
+        mhi = mhi/total;
+    elseif (form == 4)
+        mhi = double(binaries(:,:,1));       
+        total = num(3);
+        fail = 0;
+        failEnd = 0;
 
-        for i = num(3):-1:num(3)-2;
-            if ~sum(sum(binaries(:,:,i) & binaries(:,:,i-1)))
-                last = i-1;
+        for i = 2:num(3)
+            if ((i <= 4) & ~sum(sum((mhi>0) & binaries(:,:,i))))
+                mhi = double(binaries(:,:,i));
+                total = total-(i-1-fail);
+                fail = i-1;
+            elseif ((i >= num(3)-2) & ~sum(sum((mhi>0) & binaries(:,:,i))))
+                total = total - (num(3)-i+1);
+                break;
+            elseif (i < num(3)-2);
+                mhi = mhi + double(binaries(:,:,i));
             end
         end
         
-        if form == 4
-            mi = first;
-            ma = last;
-        else
-            mi = 1;
-            ma = num(3);
-        end
+        mi = fail+1;
+        ma = fail+total-1;
         
         mean = (mi+ma)/2;
         sd = (ma-mi)/2;
         
-        mhi = double(binaries(:,:,1))/num(3);
-        for i = first:last
+        mhi = zeros(num(1),num(2));
+        for i = mi:ma
             coeff = gaussValue(mean, sd, i); 
             mhi = mhi + coeff*double(binaries(:,:,i));
+        end
+    elseif (form == 5)
+        total = num(3);
+        mean = (1+total)/2;
+        sd = (total-1)/4;
+        coeff = gaussValue(mean, sd, 1); 
+        mhi = coeff*double(binaries(:,:,1));
+
+        fail = 0;
+        failEnd = 0;
+
+        for i = 2:num(3)
+            if ((i <= 4) & ~sum(sum((mhi>0) & binaries(:,:,i))))
+                coeff = gaussValue(mean, sd, i); 
+                mhi = coeff*double(binaries(:,:,i));
+                total = total-(i-1-fail);
+                fail = i-1;
+            elseif ((i >= num(3)-2) & ~sum(sum((mhi>0) & binaries(:,:,i))))
+                total = total - (num(3)-i+1);
+                break;
+            elseif (i < num(3)-2);
+               coeff = gaussValue(mean, sd, i); 
+               mhi = mhi + coeff*double(binaries(:,:,i));
+            end
         end
     end
     

@@ -32,7 +32,7 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
         if show
             figure('Name',sprintf('Test Seq: %d',1),'NumberTitle','off')
             [minX maxX minY maxY] = findHand(tMHItmp);
-            imshow(tMHItmp)
+            imshow(tMHItmp/max(max(tMHItmp)))
             hold on
             plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);   
             hold off
@@ -50,7 +50,7 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
             if show
                 [minX maxX minY maxY] = findHand(testMHIs(:,:,i));
                 figure('Name',sprintf('Test Seq: %d',i),'NumberTitle','off')
-                imshow(testMHIs(:,:,i))
+                imshow(testMHIs(:,:,i)/max(max(testMHIs(:,:,i))))
                 hold on
                 plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
                 hold off
@@ -69,12 +69,12 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
     if show
         [minX maxX minY maxY] = findHand(tMHItmp(:,:,1,1));
         figure('Name',sprintf('Train Seq: %d-%d',1,1),'NumberTitle','off')
-        imshow(tMHItmp(:,:,1,1))
+        imshow(tMHItmp(:,:,1,1)/max(max(tMHItmp(:,:,1,1))))
         hold on
         plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
         hold off
     end
-    tPtmp = getproperties(tMHItmp);
+    tPtmp = getproperties(tMHItmp);   
     dTrnSeqs = size(trainNums);
     dTrnProps = size(tPtmp);
     dTrnMHI = size(tMHItmp);
@@ -89,7 +89,7 @@ function [trainProps, trainLabs] = EightFoldCV(trainPath, testPath, labelled, ba
                 if show
                     [minX maxX minY maxY] = findHand(trainMHIs(:,:,i,j));
                     figure('Name',sprintf('Train Seq: %d-%d',i,j),'NumberTitle','off')
-                    imshow(trainMHIs(:,:,i,j))
+                    imshow(trainMHIs(:,:,i,j)/max(max(trainMHIs(:,:,i,j))))
                     hold on
                     plot([minX minX maxX maxX minX], [minY maxY maxY minY minY], 'Color', 'Red', 'LineWidth', 3);
                     hold off
